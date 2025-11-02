@@ -28,7 +28,7 @@ def generateAndSaveSimilarityMatrix():
     np.savez(npz_basename, lower_triangular)
 
 def loadNpyFilesIntoSHM():
-    from multiprocessing import shared_memory, resource_tracker  # https://docs.python.org/3.9/library/multiprocessing.shared_memory.html#multiprocessing.shared_memory.SharedMemory.size
+    from multiprocessing import shared_memory  # https://docs.python.org/3.12/library/multiprocessing.shared_memory.html#multiprocessing.shared_memory.SharedMemory.size
 
     npzfile = np.load(npz_basename+'.npz')
     loaded_matrix = npzfile['arr_0.npy']

@@ -5,10 +5,12 @@
   <title>IsoGrego: Find Related Gregorian Chants</title><?php
   session_start();
   if (isset($_GET['n']))
-        $n = $_SESSION['n'] = $_GET['n'];
+    $n = $_SESSION['n'] = $_GET['n'];
   else
-        if (isset($_SESSION['n']))
-                $n = $_SESSION['n'];
+    if (isset($_SESSION['n']))
+      $n = $_SESSION['n'];
+    else
+      $n = 64;
   $file = fopen("max_id.txt", "r") or die('<font color="red">Unable to determine max GregoBase ID.</font>');
   $max_id = trim(fgets($file));
   $sync_time = date('Y-m-d', filemtime("GABCs/$maxid.gabc"));
