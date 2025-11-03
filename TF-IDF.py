@@ -11,13 +11,13 @@ if len(sys.argv) != 5:
     print("4 args required: similarity matrix shared memory ID, # matrix rows/cols, GregoBase ID, number of results")
     sys.exit(1)
 
-import os, re
+from pathlib import Path
+import re
 import numpy as np
 from multiprocessing import shared_memory, resource_tracker
 
-os.chdir('GABCs')
-text_files = os.listdir()
-documents = [open(f).read() for f in text_files]
+text_files = [f for f in Path('./GABCs').glob('*.gabc')]
+documents = [f.read_text() for f in text_files]
 arr_size = int(sys.argv[2])
 num_elems = arr_size*(arr_size+1)//2  # n(n+1)/2 elements in lower-triangle (incl. diagonal)
 
@@ -43,7 +43,7 @@ def get_row_from_1d_array(lower_tri_elements, row_index, n):
     return row
 
 #top n similar files for document
-filename=f'{sys.argv[3]}.gabc'
+filename=Path(f'GABCs/{sys.argv[3]}.gabc')
 n = int(sys.argv[4])
 idx = text_files.index(filename)
 
@@ -55,6 +55,6 @@ for i in topn:
         name = re.findall(r"name:([^;]*)", gabc)[0]
     except:
         pass
-    gabc_id = text_files[i]
+    gabc_id = text_files[i].name
     gabc_id = int(gabc_id.removesuffix(".gabc"))
     print(f'<li><details><summary><a href="?id={gabc_id}">🔍</a> {round(row[i]*100)!s}% {name!s}</summary><a href="https://gregobase.selapa.net/chant.php?id={gabc_id}" target="_blank"><img src="https://gregobase.selapa.net/chant_img.php?id={gabc_id}" alt="{name!s}" loading="lazy"/></a></details></li>')
