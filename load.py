@@ -38,8 +38,8 @@ def loadNpyFilesIntoSHM():
     np.copyto(shared_array, loaded_matrix)
 
     with open('shm.name.txt', 'w') as f:
-        print('shm name:', shm.name)
-        print('matrix.shape:', loaded_matrix.shape)
+        print(f'shm name: {shm.name}')
+        print(f'matrix.shape: {loaded_matrix.shape}')
         print(shm.name, file=f)
 
     print('Hit enter to exit and cleanup shared memory.')
@@ -50,8 +50,8 @@ def loadNpyFilesIntoSHM():
     shm.unlink()
 
 if not os.path.exists(npz_basename+'.npz'):
-    print('Generating similarity matrix and saving it as ' + npz_basename + '.npz…')
+    print(f'Generating similarity matrix and saving it as {npz_basename}.npz…')
     generateAndSaveSimilarityMatrix()
 
-print('Loading ' + npz_basename + '.npz into shared memory (shm)…')
+print(f'Loading {npz_basename}.npz into shared memory (shm)…')
 loadNpyFilesIntoSHM()

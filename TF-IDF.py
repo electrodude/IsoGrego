@@ -43,7 +43,7 @@ def get_row_from_1d_array(lower_tri_elements, row_index, n):
     return row
 
 #top n similar files for document
-filename=sys.argv[3]+'.gabc'
+filename=f'{sys.argv[3]}.gabc'
 n = int(sys.argv[4])
 idx = text_files.index(filename)
 
@@ -52,11 +52,9 @@ topn = np.argsort(row)[::-1][:n+1]
 for i in topn:
     gabc = documents[i]
     try:
-        name = re.findall("name:[^;]*", gabc)[0]
+        name = re.findall(r"name:([^;]*)", gabc)[0]
     except:
         pass
-    name = name.replace("name:", "")
     gabc_id = text_files[i]
-    gabc_id = int(re.sub(".gabc", "", gabc_id))
-    print('<li><details><summary><a href="?id=%d">🔍</a> '%(gabc_id)+str(round(row[i]*100))+'% '+'%s</summary><a href="https://gregobase.selapa.net/chant.php?id=%d" target="_blank"><img src="https://gregobase.selapa.net/chant_img.php?id=%d" alt="%s" loading="lazy"/></a></details></li>'%(name, gabc_id, gabc_id, name))
-
+    gabc_id = int(gabc_id.removesuffix(".gabc"))
+    print(f'<li><details><summary><a href="?id={gabc_id}">🔍</a> {round(row[i]*100)!s}% {name!s}</summary><a href="https://gregobase.selapa.net/chant.php?id={gabc_id}" target="_blank"><img src="https://gregobase.selapa.net/chant_img.php?id={gabc_id}" alt="{name!s}" loading="lazy"/></a></details></li>')
