@@ -36,9 +36,7 @@
         else if ($n < 0 or $n > 64)
                 die('<font color="red">Number of results must be >0 and ≤64.</font>');
         else {
-                $file = fopen("shm.name.txt", "r") or die('<font color="red">Unable to open similarity matrix.</font>');
-                $shm_name = trim(fgets($file));
-                echo shell_exec('./TF-IDF.py ' . $shm_name . ' ' . $id . ' ' . $n . ' 2>&1');
+                echo shell_exec('./TF-IDF.py ' . $id . ' ' . $n . ' 2>&1');
         }
     }
     ?>

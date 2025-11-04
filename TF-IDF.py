@@ -7,26 +7,26 @@
 # NEED TO RUN load.py FIRST
 
 import sys
-if len(sys.argv) != 4:
-    print("3 args required: similarity matrix shared memory ID, GregoBase ID, number of results")
+if len(sys.argv) != 3:
+    print("2 args required: GregoBase ID, number of results")
     sys.exit(1)
 
 from pathlib import Path
 import re
 import numpy as np
-from multiprocessing import shared_memory, resource_tracker
 
 text_files = [f for f in Path('./GABCs').glob('*.gabc')]
 arr_size = len(text_files)
 num_elems = arr_size*(arr_size+1)//2  # n(n+1)/2 elements in lower-triangle (incl. diagonal)
 
+npy_basename = 'lower_triangular'
+npy_path = Path(f'{npy_basename}.npy')
+
 try:
-    existing_shm = shared_memory.SharedMemory(name=sys.argv[1])
+    pairwise_similarity = np.lib.format.open_memmap(npy_path)  # The lower-triangular matrix is in 1-D array representation.
 except:
-    print('<font color="red">Unable to open similarity matrix from shared memory.</font>')
+    print('<font color="red">Unable to open similarity matrix.</font>')
     sys.exit(1)
-resource_tracker.unregister(existing_shm._name, 'shared_memory') # Keep SHM persistent. https://stackoverflow.com/a/64916180/1429450
-pairwise_similarity = np.ndarray((num_elems,), dtype=np.float64, buffer=existing_shm.buf)  # The lower-triangular matrix is in 1-D array representation.
 
 # 🎩-tip for the following 2 functions: ChatGPT 4o https://chat.openai.com/share/75de2f76-cd12-4d4f-9e4a-154eac227407
 def get_index(i, j, n):
@@ -42,8 +42,8 @@ def get_row_from_1d_array(lower_tri_elements, row_index, n):
     return row
 
 #top n similar files for document
-filename=Path(f'GABCs/{sys.argv[2]}.gabc')
-n = int(sys.argv[3])
+filename=Path(f'GABCs/{sys.argv[1]}.gabc')
+n = int(sys.argv[2])
 idx = text_files.index(filename)
 
 row = get_row_from_1d_array(pairwise_similarity,idx,arr_size)
