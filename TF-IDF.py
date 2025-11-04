@@ -17,7 +17,6 @@ import numpy as np
 from multiprocessing import shared_memory, resource_tracker
 
 text_files = [f for f in Path('./GABCs').glob('*.gabc')]
-documents = [f.read_text() for f in text_files]
 arr_size = int(sys.argv[2])
 num_elems = arr_size*(arr_size+1)//2  # n(n+1)/2 elements in lower-triangle (incl. diagonal)
 
@@ -50,7 +49,7 @@ idx = text_files.index(filename)
 row = get_row_from_1d_array(pairwise_similarity,idx,arr_size)
 topn = np.argsort(row)[::-1][:n+1]
 for i in topn:
-    gabc = documents[i]
+    gabc = text_files[i].read_text()
     try:
         name = re.findall(r"name:([^;]*)", gabc)[0]
     except:
