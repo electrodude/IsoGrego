@@ -9,8 +9,8 @@ import sys
 import numpy as np
 from pathlib import Path
 
-npz_basename = 'lower_triangular'
-npz_path = Path(f'{npz_basename}.npz')
+npy_basename = 'lower_triangular'
+npy_path = Path(f'{npy_basename}.npy')
 
 def generateAndSaveSimilarityMatrix():
     text_files = [f for f in Path('./GABCs').glob('*.gabc')]
@@ -25,13 +25,12 @@ def generateAndSaveSimilarityMatrix():
     # Extract the elements of the lower triangular part including the diagonal
     lower_triangular = pairwise_similarity.toarray()[np.tril_indices(pairwise_similarity.shape[0])]
     # Save it.
-    np.savez(npz_path, lower_triangular)
+    np.save(npy_path, lower_triangular)
 
 def loadNpyFilesIntoSHM():
     from multiprocessing import shared_memory  # https://docs.python.org/3.12/library/multiprocessing.shared_memory.html#multiprocessing.shared_memory.SharedMemory.size
 
-    npzfile = np.load(npz_path)
-    loaded_matrix = npzfile['arr_0.npy']
+    loaded_matrix = np.load(npy_path)
     shm = shared_memory.SharedMemory(create=True, size=loaded_matrix.nbytes)
 
     # Copy the data into the shared memory block
@@ -49,9 +48,9 @@ def loadNpyFilesIntoSHM():
     shm.close()
     shm.unlink()
 
-if not npz_path.exists():
-    print(f'Generating similarity matrix and saving it as {npz_path}…')
+if not npy_path.exists():
+    print(f'Generating similarity matrix and saving it as {npy_path}…')
     generateAndSaveSimilarityMatrix()
 
-print(f'Loading {npz_path} into shared memory (shm)…')
+print(f'Loading {npy_path} into shared memory (shm)…')
 loadNpyFilesIntoSHM()
