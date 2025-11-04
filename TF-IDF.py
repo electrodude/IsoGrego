@@ -7,8 +7,8 @@
 # NEED TO RUN load.py FIRST
 
 import sys
-if len(sys.argv) != 5:
-    print("4 args required: similarity matrix shared memory ID, # matrix rows/cols, GregoBase ID, number of results")
+if len(sys.argv) != 4:
+    print("3 args required: similarity matrix shared memory ID, GregoBase ID, number of results")
     sys.exit(1)
 
 from pathlib import Path
@@ -17,7 +17,7 @@ import numpy as np
 from multiprocessing import shared_memory, resource_tracker
 
 text_files = [f for f in Path('./GABCs').glob('*.gabc')]
-arr_size = int(sys.argv[2])
+arr_size = len(text_files)
 num_elems = arr_size*(arr_size+1)//2  # n(n+1)/2 elements in lower-triangle (incl. diagonal)
 
 try:
@@ -42,8 +42,8 @@ def get_row_from_1d_array(lower_tri_elements, row_index, n):
     return row
 
 #top n similar files for document
-filename=Path(f'GABCs/{sys.argv[3]}.gabc')
-n = int(sys.argv[4])
+filename=Path(f'GABCs/{sys.argv[2]}.gabc')
+n = int(sys.argv[3])
 idx = text_files.index(filename)
 
 row = get_row_from_1d_array(pairwise_similarity,idx,arr_size)

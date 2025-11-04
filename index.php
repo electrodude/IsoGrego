@@ -38,7 +38,7 @@
         else {
                 $file = fopen("shm.name.txt", "r") or die('<font color="red">Unable to open similarity matrix.</font>');
                 $shm_name = trim(fgets($file));
-                echo shell_exec('./TF-IDF.py ' . $shm_name . ' ' . $max_id . ' ' . ' ' . $id . ' ' . $n . ' 2>&1');
+                echo shell_exec('./TF-IDF.py ' . $shm_name . ' ' . $id . ' ' . $n . ' 2>&1');
         }
     }
     ?>
